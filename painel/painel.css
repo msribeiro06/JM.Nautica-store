@@ -1,0 +1,17 @@
+
+:root{--bg:#f4fbff;--card:#fff;--primary:#002b50;--muted:#6b7b88;--radius:12px}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:#06202b}
+.side{width:220px;position:fixed;left:0;top:0;bottom:0;background:#fff;padding:18px;border-right:1px solid #e6f2fb}
+.brand{font-weight:800;color:var(--primary);margin-bottom:12px}
+.side nav button{display:block;width:100%;margin:6px 0;padding:10px;border-radius:8px;border:0;background:transparent;text-align:left;cursor:pointer}
+.content{margin-left:240px;padding:18px}
+.row{display:flex;gap:12px}
+.card{background:var(--card);padding:12px;border-radius:12px;box-shadow:0 8px 24px rgba(2,6,23,0.06)}
+.product-list{display:flex;flex-direction:column;gap:8px;max-height:520px;overflow:auto}
+.prod-row{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:8px;border:1px solid #eef6fb}
+.prod-thumb{width:80px;height:56px;object-fit:cover;border-radius:6px}
+label{display:block;margin:8px 0}
+input,select,textarea{width:100%;padding:8px;border-radius:8px;border:1px solid #e6eef6}
+.form-actions{display:flex;gap:8px;margin-top:8px}
+.btn{padding:8px 10px;border-radius:8px;border:0;cursor:pointer}
+.btn.primary{background:var(--primary);color:#fff}

@@ -1,0 +1,374 @@
+/* Variáveis base */
+:root{
+  --azul: #002b50;
+  --azul-claro: #0b6ea8;
+  --fundo: #f5fbff;
+  --texto: #202c3b;
+  --cinza: #748494;
+  --radius: 12px;
+  --sombra: rgba(0,0,0,0.05);
+}
+
+/* Global box-sizing */
+*,
+*::before,
+*::after{
+  box-sizing: border-box;
+}
+
+/* Body */
+body{
+  margin: 0;
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: Inter, system-ui, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+body.dark {
+  background: #071021; /* fundo escuro global */
+  color: #e6f0f8;
+  transition: background-color .18s ease, color .18s ease;
+}
+
+/* Navbar */
+.navbar{
+  background: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 18px;
+  box-shadow: 0 4px 20px var(--sombra);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+body.dark .navbar {
+  background: #0b1624;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+}
+.logo{ font-weight:800; font-size:18px; color:var(--azul); }
+body.dark .logo { color: #9fd6ff; }
+.controls{ display:flex; gap:8px; align-items:center; }
+
+/* Search */
+#search{
+  padding:6px 10px;
+  border-radius:8px;
+  border:1px solid #e6eef6;
+  background:#fff;
+}
+#search:focus{
+  outline: none;
+  border-color: var(--azul-claro);
+  box-shadow: 0 6px 20px rgba(11,110,168,0.12);
+}
+body.dark .controls input {
+  background: #0f2330;
+  color: #e6eef8;
+  border-color: rgba(255,255,255,0.06);
+  box-shadow: none;
+}
+
+/* Grid de produtos */
+.grid-produtos{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap:16px;
+  padding:16px;
+}
+
+/* Card Produto */
+.card-prod{
+  background:#fff;
+  border-radius: var(--radius);
+  box-shadow: 0 6px 20px var(--sombra);
+  padding:12px;
+  transition: transform .18s, box-shadow .18s;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between; /* garante ações abaixo */
+  min-height:260px;
+}
+.card-prod:hover,
+.card-prod:focus-within{
+  transform: translateY(-6px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+.card-prod img{
+  width:100%;
+  height:160px;
+  object-fit:cover;
+  border-radius:8px;
+}
+.card-title{
+  font-weight:700;
+  color:var(--azul);
+  margin:8px 0;
+}
+.card-desc{
+  color:var(--cinza);
+  font-size:13px;
+  margin-bottom:8px;
+  overflow-wrap:anywhere;
+}
+
+/* Dark mode global (aplicar ao body.dark) */
+
+/* Cards (garante que o fundo dos cards acompanhe) */
+body.dark .card-prod {
+  background: linear-gradient(180deg, #071423 0%, #0b2432 100%);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+}
+body.dark .card-title { color: #bfe6ff; }
+body.dark .card-desc { color: #9fb6c6; }
+
+/* Card actions - garante espaço para descrição antes das ações */
+.card-actions{
+  display:flex;
+  gap:8px;
+  margin-top:12px;
+  position:relative;
+  z-index:1;
+}
+
+/* Botão WhatsApp dentro do card (não fixo) */
+.whatsapp-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 12px;
+  background:#25D366;
+  color:#fff;
+  border:0;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:14px;
+  line-height:1;
+  box-shadow: 0 6px 18px rgba(37,211,102,0.18);
+  transition: transform .12s ease, box-shadow .12s ease;
+  position:relative;
+  z-index:2;
+}
+.whatsapp-btn:hover,
+.whatsapp-btn:focus{
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(37,211,102,0.2);
+}
+body.dark .whatsapp-btn {
+  background: linear-gradient(180deg,#28d86a,#14b95b);
+  color:#001814;
+  box-shadow: 0 8px 20px rgba(20,140,80,0.18);
+}
+
+/* Botão flutuante (canto da tela) */
+.whatsapp-float{
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #25D366;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 58px;
+  height: 58px;
+  font-size: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 6px 20px var(--sombra);
+  z-index: 30;
+  transition: transform .12s ease;
+}
+.whatsapp-float:hover,
+.whatsapp-float:focus{
+  transform: scale(1.08);
+}
+body.dark .whatsapp-float {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
+}
+
+/* Carrinho: animar transform (mais performático) */
+.carrinho{
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 340px;
+  height: 100%;
+  background:#fff;
+  box-shadow: -2px 0 10px rgba(0,0,0,0.12);
+  padding:20px;
+  transition: transform .35s ease;
+  transform: translateX(100%);
+  display:flex;
+  flex-direction:column;
+  z-index:20;
+  will-change: transform;
+}
+.carrinho.open{ transform: translateX(0); }
+body.dark .carrinho {
+  background: #071423;
+  box-shadow: -4px 0 20px rgba(0,0,0,0.7);
+}
+
+/* Modal */
+.modal{
+  position: fixed;
+  inset:0;
+  background: rgba(0,0,0,0.45);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:50;
+}
+.modal[aria-hidden="false"]{ display:flex; }
+.modal-content{
+  background:#fff;
+  padding:18px;
+  border-radius:12px;
+  min-width:320px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+body.dark .modal-content {
+  background: #071422;
+  color: #e6eef8;
+}
+
+/* Seções de produtos bem seccionadas */
+.product-section {
+  padding: 28px 16px;
+  background: linear-gradient(180deg, rgba(245,251,255,1) 0%, rgba(255,255,255,1) 100%);
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+.product-section.alt {
+  background: #f7fcff; /* faixa alternativa */
+}
+body.dark .product-section { background: linear-gradient(180deg, rgba(8,18,28,1) 0%, rgba(11,19,30,1) 100%); border-color: rgba(255,255,255,0.02); }
+body.dark .product-section.alt { background: #071422; }
+
+/* centraliza conteúdo e limita largura */
+.section-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+/* Header da seção (título + ações) */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.section-header h2 {
+  margin: 0;
+  font-size: 20px;
+  color: var(--azul);
+}
+.section-sub {
+  margin: 4px 0 0 0;
+  color: var(--cinza);
+  font-size: 13px;
+}
+body.dark .muted, body.dark .section-sub {
+  color: #7f98a6;
+}
+
+/* Ações (setas) */
+.section-actions {
+  display: flex;
+  gap: 6px;
+}
+.scroll-btn {
+  border: 0;
+  background: #fff;
+  color: var(--azul);
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+}
+.scroll-btn:focus { outline: 3px solid rgba(11,110,168,0.16); }
+body.dark .scroll-btn, body.dark .btn-primary {
+  background: #0e2a38;
+  color: #cfefff;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+}
+
+/* Wrapper com overflow e snapping */
+.product-list-wrapper {
+  overflow: hidden;
+}
+.product-list {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 12px 4px;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+}
+
+/* cada card fixa largura e snap */
+.product-list .card-prod {
+  flex: 0 0 280px;
+  scroll-snap-align: start;
+  margin: 0;
+}
+
+/* esconder barra em diferentes browsers */
+.product-list::-webkit-scrollbar { height: 8px; }
+.product-list::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.08); border-radius: 8px; }
+.product-list { scrollbar-width: thin; scrollbar-color: rgba(0,0,0,0.08) transparent; }
+
+/* responsivo: largura dos cards menor em telas pequenas */
+@media (max-width: 600px) {
+  .product-list .card-prod { flex: 0 0 220px; }
+  .section-header h2 { font-size: 18px; }
+  .scroll-btn { width: 32px; height: 32px; font-size: 18px; }
+}
+
+/* Ajustes para dark mode */
+body.dark .navbar { background: #041827; }
+body.dark .card-prod { background: #071526; color: #cfe9ff; }
+body.dark .modal-content { background: #042233; color: #d8f3ff; }
+
+/* Logo usada no botão flutuante */
+.whatsapp-logo {
+  width: 28px;
+  height: auto;
+  display: block;
+}
+
+/* Lista interna das categorias: cards em linha, scroll horizontal */
+#lista-novos,
+#lista-seminovos {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 12px 4px;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+}
+
+/* Cada card fixa largura e permite snap */
+#lista-novos .card-prod,
+#lista-seminovos .card-prod {
+  flex: 0 0 280px; /* ajuste a largura conforme preferir */
+  scroll-snap-align: start;
+  margin: 0; /* evita gaps extras */
+}
+
+/* mantém aparência do grid externo (se presente) */
+.grid-produtos > div {
+  min-width: 0; /* para evitar overflow indesejado */
+}
+
+/* transições suaves para componentes */
+.navbar, .card-prod, .carrinho, .modal-content, .product-section {
+  transition: background-color .18s ease, border-color .18s ease, box-shadow .18s ease, color .18s ease;
+}

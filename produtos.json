@@ -1,0 +1,289 @@
+[
+  {
+    "id": 1,
+    "nome": "trim aliviador f40 Yamaha",
+    "preco": 0,
+    "estoque": 1,
+    "imagens": [
+      "/uploads/1760361729055-trim_aliviador_do_f40.jpeg"
+    ],
+    "imagem": "/uploads/1760361729055-trim_aliviador_do_f40.jpeg",
+    "categoria": "seminovo",
+    "descricao": "trim aliviador f40 Yamaha",
+    "whatsappClicks": 1
+  },
+  {
+    "id": 2,
+    "nome": "trim do f115 Yamaha",
+    "preco": 0,
+    "estoque": 1,
+    "imagens": [
+      "/uploads/1760361775795-trim_do_f115.jpeg"
+    ],
+    "imagem": "/uploads/1760361775795-trim_do_f115.jpeg",
+    "categoria": "seminovo",
+    "descricao": "trim do f115 Yamaha de agua doce",
+    "whatsappClicks": 1
+  },
+  {
+    "id": 3,
+    "nome": "trim para f200/250/300 Yamaha",
+    "preco": 0,
+    "estoque": 1,
+    "imagens": [
+      "/uploads/1760361838843-trim_f200;250;300.jpeg"
+    ],
+    "imagem": "/uploads/1760361838843-trim_f200;250;300.jpeg",
+    "categoria": "seminovo",
+    "descricao": "trim para f200/250/300 Yamaha para agua doce",
+    "whatsappClicks": 1
+  },
+  {
+    "id": 4,
+    "nome": "trim f115/150 Yamaha",
+    "preco": 0,
+    "estoque": 1,
+    "imagens": [
+      "/uploads/1760361879922-trim_f115;150.jpeg"
+    ],
+    "imagem": "/uploads/1760361879922-trim_f115;150.jpeg",
+    "categoria": "seminovo",
+    "descricao": "trim f115/150 Yamaha para agua doce",
+    "whatsappClicks": 0
+  },
+  {
+    "id": 5,
+    "nome": "trim Mercury",
+    "preco": 0,
+    "estoque": 1,
+    "imagens": [
+      "/uploads/1760361923796-trim_mercury.jpeg"
+    ],
+    "imagem": "/uploads/1760361923796-trim_mercury.jpeg",
+    "categoria": "seminovo",
+    "descricao": "trim Mercury para agua doce",
+    "whatsappClicks": 0
+  },
+  {
+    "id": 6,
+    "nome": "chicote do CT 100 Mercury",
+    "preco": 0,
+    "estoque": 1,
+    "imagens": [
+      "/uploads/1760361965105-chicote_do_CT_100.jpeg"
+    ],
+    "imagem": "/uploads/1760361965105-chicote_do_CT_100.jpeg",
+    "categoria": "seminovo",
+    "descricao": "chicote do CT 100 Mercury para agua doce",
+    "whatsappClicks": 0
+  },
+  {
+    "id": 7,
+    "nome": "cabo de bateria",
+    "preco": 0,
+    "estoque": 1,
+    "imagens": [
+      "/uploads/1760362020033-cabo_de_bateria_original.jpeg"
+    ],
+    "imagem": "/uploads/1760362020033-cabo_de_bateria_original.jpeg",
+    "categoria": "seminovo",
+    "descricao": "cabo de bateria original",
+    "whatsappClicks": 0
+  },
+  {
+    "id": 8,
+    "nome": "chicote do f90 Yamaha",
+    "preco": 0,
+    "estoque": 1,
+    "imagens": [
+      "/uploads/1760362052341-chicote_f90.jpeg"
+    ],
+    "imagem": "/uploads/1760362052341-chicote_f90.jpeg",
+    "categoria": "seminovo",
+    "descricao": "chicote do f90 Yamaha para agua doce",
+    "whatsappClicks": 0
+  },
+  {
+    "id": 9,
+    "nome": "cabeçote do f90 completo Yamaha",
+    "preco": 0,
+    "estoque": 1,
+    "imagens": [
+      "/uploads/1760362112460-bloco_do_f90.jpeg",
+      "/uploads/1760362112461-cabecote_do_f90.jpeg"
+    ],
+    "imagem": "/uploads/1760362112460-bloco_do_f90.jpeg",
+    "categoria": "seminovo",
+    "descricao": "cabeçote do f90 completo Yamaha para aguda doce",
+    "whatsappClicks": 0
+  },
+  {
+    "id": 10,
+    "nome": "flauta do f90 Yamaha",
+    "preco": 0,
+    "estoque": 1,
+    "imagens": [
+      "/uploads/1760362139560-flauta_f90.jpeg"
+    ],
+    "imagem": "/uploads/1760362139560-flauta_f90.jpeg",
+    "categoria": "seminovo",
+    "descricao": "flauta do f90 Yamaha para agua doce",
+    "whatsappClicks": 0
+  },
+  {
+    "id": 11,
+    "nome": "sensor da marcha lenta do f60/90 Yamaha",
+    "preco": 0,
+    "estoque": 1,
+    "imagens": [
+      "/uploads/1760362234113-sensor_de_marcha_lenta_f60;90.jpeg"
+    ],
+    "imagem": "/uploads/1760362234113-sensor_de_marcha_lenta_f60;90.jpeg",
+    "categoria": "seminovo",
+    "descricao": "sensor da marcha lenta do f60/90 Yamaha",
+    "whatsappClicks": 0
+  },
+  {
+    "id": 12,
+    "nome": "módulo do f90 Yamaha",
+    "preco": 0,
+    "estoque": 1,
+    "imagens": [
+      "/uploads/1760362273134-modulo_do_f90.jpeg"
+    ],
+    "imagem": "/uploads/1760362273134-modulo_do_f90.jpeg",
+    "categoria": "seminovo",
+    "descricao": "módulo do f90 Yamaha para água doce",
+    "whatsappClicks": 0
+  },
+  {
+    "id": 13,
+    "nome": "bobina de ignição do f90 Yamaha",
+    "preco": 0,
+    "estoque": 1,
+    "imagens": [
+      "/uploads/1760362326017-bobina_igniÃ§ao_f90.jpeg"
+    ],
+    "imagem": "/uploads/1760362326017-bobina_igniÃ§ao_f90.jpeg",
+    "categoria": "seminovo",
+    "descricao": "bobina de ignição do f90 Yamaha",
+    "whatsappClicks": 0
+  },
+  {
+    "id": 14,
+    "nome": "volante e estator do f60 Yamaha",
+    "preco": 0,
+    "estoque": 1,
+    "imagens": [
+      "/uploads/1760362372239-volante_e_estator_f60.jpeg"
+    ],
+    "imagem": "/uploads/1760362372239-volante_e_estator_f60.jpeg",
+    "categoria": "seminovo",
+    "descricao": "volante e estator do f60 Yamaha para água doce",
+    "whatsappClicks": 0
+  },
+  {
+    "id": 15,
+    "nome": "módulo do f60 Yamaha",
+    "preco": 0,
+    "estoque": 1,
+    "imagens": [
+      "/uploads/1760362430342-modulo_do_f60.jpeg"
+    ],
+    "imagem": "/uploads/1760362430342-modulo_do_f60.jpeg",
+    "categoria": "seminovo",
+    "descricao": "módulo do f60 Yamaha para água doce",
+    "whatsappClicks": 0
+  },
+  {
+    "id": 16,
+    "nome": "volante do 40x Yamaha",
+    "preco": 0,
+    "estoque": 1,
+    "imagens": [
+      "/uploads/1760362514755-volante_40x.jpeg"
+    ],
+    "imagem": "/uploads/1760362514755-volante_40x.jpeg",
+    "categoria": "seminovo",
+    "descricao": "volante do 40x Yamaha agua doce",
+    "whatsappClicks": 0
+  },
+  {
+    "id": 17,
+    "nome": "caixa de fusível do f200 Yamaha",
+    "preco": 0,
+    "estoque": 1,
+    "imagens": [
+      "/uploads/1760362568761-caixa_de_fusivel_f200.jpeg"
+    ],
+    "imagem": "/uploads/1760362568761-caixa_de_fusivel_f200.jpeg",
+    "categoria": "seminovo",
+    "descricao": "caixa de fusível do f200 Yamaha para agua doce",
+    "whatsappClicks": 0
+  },
+  {
+    "id": 18,
+    "nome": "módulo do f115 Yamaha",
+    "preco": 0,
+    "estoque": 1,
+    "imagens": [
+      "/uploads/1760362599611-modulo_f115.jpeg"
+    ],
+    "imagem": "/uploads/1760362599611-modulo_f115.jpeg",
+    "categoria": "seminovo",
+    "descricao": "módulo do f115 Yamaha para agua doce",
+    "whatsappClicks": 0
+  },
+  {
+    "id": 19,
+    "nome": "carcaça com canhão Yamaha",
+    "preco": 0,
+    "estoque": 1,
+    "imagens": [
+      "/uploads/1760362703882-canhao_com_carcaÃ§a.jpeg"
+    ],
+    "imagem": "/uploads/1760362703882-canhao_com_carcaÃ§a.jpeg",
+    "categoria": "seminovo",
+    "descricao": "carcaça com canhão Yamaha para água doce",
+    "whatsappClicks": 0
+  },
+  {
+    "id": 20,
+    "nome": "motor de partida do f60/90/115 Yamaha",
+    "preco": 0,
+    "estoque": 1,
+    "imagens": [
+      "/uploads/1760362744091-motor_de_partida.jpeg"
+    ],
+    "imagem": "/uploads/1760362744091-motor_de_partida.jpeg",
+    "categoria": "seminovo",
+    "descricao": "motor de partida do f60/90/115 Yamaha para água doce",
+    "whatsappClicks": 0
+  },
+  {
+    "id": 21,
+    "nome": "eixo cardam do f90 Yamaha",
+    "preco": 0,
+    "estoque": 1,
+    "imagens": [
+      "/uploads/1760362787566-eixo_cardam.jpeg"
+    ],
+    "imagem": "/uploads/1760362787566-eixo_cardam.jpeg",
+    "categoria": "seminovo",
+    "descricao": "eixo cardam do f90 Yamaha para água doce",
+    "whatsappClicks": 0
+  },
+  {
+    "id": 22,
+    "nome": "idk",
+    "preco": 0,
+    "estoque": 1,
+    "imagens": [
+      "/uploads/1760374215181-WhatsApp_Image_2025-10-13_at_14.29.43_(1).jpeg"
+    ],
+    "imagem": "/uploads/1760374215181-WhatsApp_Image_2025-10-13_at_14.29.43_(1).jpeg",
+    "categoria": "novo",
+    "descricao": "",
+    "whatsappClicks": 1
+  }
+]

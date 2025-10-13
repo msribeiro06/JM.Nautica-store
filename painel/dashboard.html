@@ -1,0 +1,57 @@
+
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Painel - Náutica Store PRO</title>
+  <link rel="stylesheet" href="/painel/painel.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <aside class="side">
+    <div class="brand">⚓ Náutica Store - Painel</div>
+    <nav><button id="nav-produtos">Produtos</button><button id="nav-stats">Estatísticas</button><button id="btn-logout">Sair</button></nav>
+  </aside>
+  <main class="content">
+    <header><h2 id="page-title">Produtos</h2></header>
+    <section id="page-produtos" class="page">
+      <div class="row">
+        <div class="card">
+          <h3>Adicionar / Editar</h3>
+          <form id="product-form">
+            <input type="hidden" id="prod-id">
+            <label>Nome<input id="prod-nome" required></label>
+            <label>Categoria<select id="prod-categoria"><option value="novo">novo</option><option value="seminovo">seminovo</option></select></label>
+            <label>Estoque<input id="prod-estoque" type="number" required></label>
+            <label>Descrição<textarea id="prod-descricao"></textarea></label>
+            <label>Imagens (múltiplas)<input id="prod-files" type="file" accept="image/*" multiple></label>
+            <div id="preview-list"></div>
+            <div class="form-actions"><button id="btn-save" class="btn primary">Salvar</button><button id="btn-clear" type="button" class="btn">Limpar</button></div>
+          </form>
+        </div>
+        <div class="card" style="flex:1">
+          <h3>Lista de Produtos</h3>
+          <div id="product-list" class="product-list"></div>
+        </div>
+      </div>
+    </section>
+    <section id="page-stats" class="page" style="display:none">
+      <div class="row">
+        <div class="card">
+          <h3>Resumo</h3>
+          <div>Total de produtos: <span id="stat-total">0</span></div>
+          <div>Novos: <span id="stat-novos">0</span></div>
+          <div>Seminovos: <span id="stat-semi">0</span></div>
+          <div>Produtos com estoque baixo: <span id="stat-low">0</span></div>
+        </div>
+        <div class="card" style="flex:1">
+          <h3>Cliques no WhatsApp (top produtos)</h3>
+          <canvas id="clicksChart" height="140"></canvas>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="/painel/painel.js"></script>
+</body>
+</html>
