@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let produtos = [];
 
+  // 🔹 Carrega os produtos do servidor
   async function carregarProdutos() {
     try {
       const res = await fetch('/api/produtos');
@@ -29,13 +30,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // 🔹 Renderiza os produtos nas listas "novos" e "seminovos"
   function render(list = []) {
     if (!novos || !semi) return;
     novos.innerHTML = '';
     semi.innerHTML = '';
+
     const q = (search && search.value ? search.value.toLowerCase() : '');
+
     list.forEach(p => {
       if (q && !(p.nome || '').toLowerCase().includes(q)) return;
+
       const card = document.createElement('div');
       card.className = 'card-prod';
 
@@ -55,12 +60,19 @@ document.addEventListener('DOMContentLoaded', () => {
       const actions = document.createElement('div');
       actions.className = 'card-actions';
 
-      const btn = document.createElement('button');
+      // ✅ Link compatível com iPhone (sem bloqueio de popup)
+      const btn = document.createElement('a');
       btn.className = 'whatsapp-btn';
-      btn.type = 'button';
-      btn.dataset.id = p.id || '';
-      btn.dataset.name = encodeURIComponent(p.nome || '');
+      btn.href = `https://wa.me/${whatsNumber}?text=${encodeURIComponent('Olá! Tenho interesse no produto: ' + (p.nome || ''))}`;
+      btn.target = '_blank';
+      btn.rel = 'noopener';
       btn.textContent = 'Conversar via WhatsApp';
+      btn.dataset.id = p.id || '';
+
+      // registra o clique sem bloquear o link
+      btn.addEventListener('mousedown', () => {
+        fetch('/api/produtos/' + btn.dataset.id + '/click', { method: 'POST' }).catch(() => {});
+      });
 
       actions.appendChild(btn);
       card.appendChild(img);
@@ -70,21 +82,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       (p.categoria === 'novo' ? novos : semi).appendChild(card);
     });
-    attachButtons();
   }
 
-  function attachButtons() {
-    document.querySelectorAll('.whatsapp-btn').forEach(b => {
-      b.onclick = async (e) => {
-        const id = e.currentTarget.dataset.id;
-        const name = decodeURIComponent(e.currentTarget.dataset.name || '');
-        try { await fetch('/api/produtos/' + id + '/click', { method: 'POST' }); } catch (err) { /* ignore */ }
-        const msg = encodeURIComponent('Olá! Tenho interesse no produto: ' + name);
-        window.open('https://wa.me/' + whatsNumber + '?text=' + msg, '_blank', 'noopener');
-      };
-    });
-  }
-
+  // 🔹 Configura botões de rolagem dos catálogos
   function setupScrollButtons() {
     document.querySelectorAll('.scroll-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -93,53 +93,91 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!container) return;
         const card = container.querySelector('.card-prod');
         const step = (card ? card.getBoundingClientRect().width : 280) + 16; // largura + gap
-        if (btn.classList.contains('scroll-left')) container.scrollBy({ left: -step, behavior: 'smooth' });
-        else container.scrollBy({ left: step, behavior: 'smooth' });
+        if (btn.classList.contains('scroll-left'))
+          container.scrollBy({ left: -step, behavior: 'smooth' });
+        else
+          container.scrollBy({ left: step, behavior: 'smooth' });
       });
     });
 
-    // suporte a teclado nas listas (setas esquerda/direita)
+    // suporte a teclado (setas esquerda/direita)
     document.querySelectorAll('.product-list').forEach(list => {
-      list.addEventListener('keydown', (ev) => {
-        if (ev.key === 'ArrowRight') { list.scrollBy({ left: 300, behavior: 'smooth' }); ev.preventDefault(); }
-        if (ev.key === 'ArrowLeft') { list.scrollBy({ left: -300, behavior: 'smooth' }); ev.preventDefault(); }
+      list.addEventListener('keydown', ev => {
+        if (ev.key === 'ArrowRight') {
+          list.scrollBy({ left: 300, behavior: 'smooth' });
+          ev.preventDefault();
+        }
+        if (ev.key === 'ArrowLeft') {
+          list.scrollBy({ left: -300, behavior: 'smooth' });
+          ev.preventDefault();
+        }
       });
-      list.tabIndex = 0; // torna focável para navegação por teclado
+      list.tabIndex = 0;
     });
   }
 
+  // 🔹 Filtros e interações gerais
   if (search) search.addEventListener('input', () => render(produtos));
-  if (darkToggle) darkToggle.addEventListener('click', () => document.body.classList.toggle('dark'));
-  if (areaRestrita && modal) areaRestrita.addEventListener('click', () => modal.setAttribute('aria-hidden', 'false'));
-  if (modalClose && modal) modalClose.addEventListener('click', () => modal.setAttribute('aria-hidden', 'true'));
+  if (darkToggle)
+    darkToggle.addEventListener('click', () => document.body.classList.toggle('dark'));
+
+  // 🔹 Modal de login
+  if (areaRestrita && modal)
+    areaRestrita.addEventListener('click', () => modal.setAttribute('aria-hidden', 'false'));
+  if (modalClose && modal)
+    modalClose.addEventListener('click', () => modal.setAttribute('aria-hidden', 'true'));
+
   if (modalForm && modalError) {
-    modalForm.addEventListener('submit', async (ev) => {
+    modalForm.addEventListener('submit', async ev => {
       ev.preventDefault();
       modalError.style.display = 'none';
       const fd = new FormData(modalForm);
       const body = { user: fd.get('user'), pass: fd.get('pass') };
       try {
-        const res = await fetch('/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        const res = await fetch('/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
         if (res.ok) window.location.href = '/painel/dashboard.html';
-        else { const j = await res.json().catch(() => ({})); modalError.textContent = j.error || 'Usuário ou senha inválidos'; modalError.style.display = 'block'; }
-      } catch (err) { modalError.textContent = 'Erro de conexão'; modalError.style.display = 'block'; }
+        else {
+          const j = await res.json().catch(() => ({}));
+          modalError.textContent = j.error || 'Usuário ou senha inválidos';
+          modalError.style.display = 'block';
+        }
+      } catch (err) {
+        modalError.textContent = 'Erro de conexão';
+        modalError.style.display = 'block';
+      }
     });
   }
 
-  if (fecharCarrinhoBtn && carrinho) fecharCarrinhoBtn.addEventListener('click', () => carrinho.classList.remove('open'));
-  document.addEventListener('click', (e) => {
+  // 🔹 Carrinho lateral
+  if (fecharCarrinhoBtn && carrinho)
+    fecharCarrinhoBtn.addEventListener('click', () => carrinho.classList.remove('open'));
+
+  document.addEventListener('click', e => {
     if (!carrinho || !cartToggle) return;
-    if (!carrinho.contains(e.target) && !cartToggle.contains(e.target)) carrinho.classList.remove('open');
+    if (!carrinho.contains(e.target) && !cartToggle.contains(e.target))
+      carrinho.classList.remove('open');
   });
 
-  if (whatsappFloat) whatsappFloat.addEventListener('click', (ev) => {
-    if (ev.preventDefault) ev.preventDefault();
-    const msg = encodeURIComponent('Olá! Tenho interesse em peças da JM.Náutica Store.');
-    window.open('https://wa.me/' + whatsNumber + '?text=' + msg, '_blank', 'noopener');
-  });
+  if (cartToggle && carrinho)
+    cartToggle.addEventListener('click', () => carrinho.classList.toggle('open'));
 
-  if (cartToggle && carrinho) cartToggle.addEventListener('click', () => carrinho.classList.toggle('open'));
-  if (btnFinalizar) btnFinalizar.addEventListener('click', () => alert('Finalize via WhatsApp (botão de conversa por produto)'));
+  if (btnFinalizar)
+    btnFinalizar.addEventListener('click', () =>
+      alert('Finalize via WhatsApp (botão de conversa por produto)')
+    );
 
+  // 🔹 Botão flutuante do WhatsApp
+  if (whatsappFloat)
+    whatsappFloat.addEventListener('click', ev => {
+      ev.preventDefault();
+      const msg = encodeURIComponent('Olá! Tenho interesse em peças da JM.Náutica Store.');
+      window.open('https://wa.me/' + whatsNumber + '?text=' + msg, '_blank', 'noopener');
+    });
+
+  // 🔹 Inicializa o catálogo
   carregarProdutos().then(() => setupScrollButtons());
 });
