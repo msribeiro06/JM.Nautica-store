@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastrar | JM NÁUTICA</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ===== Estilo adicional apenas para o cadastro ===== */
+    .cadastro-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: calc(100vh - 80px);
+      padding: 20px;
+    }
+
+    .cadastro-box {
+      background: rgba(11, 19, 43, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 40px 50px;
+      width: 100%;
+      max-width: 450px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+      color: var(--text);
+      text-align: center;
+    }
+
+    .cadastro-box h2 {
+      margin-bottom: 20px;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .cadastro-box input {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .cadastro-box input::placeholder {
+      color: var(--muted);
+    }
+
+    .cadastro-box button {
+      width: 100%;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      font-size: 1rem;
+    }
+
+    .cadastro-box button:hover {
+      background: #56d0ff;
+      transform: scale(1.03);
+    }
+
+    .cadastro-box p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-top: 10px;
+    }
+
+    .cadastro-box a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .cadastro-box a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ===== Navbar ===== -->
+  <header class="navbar">
+    <div class="logo">JM.NÁUTICA</div>
+    <nav>
+      <a href="index.html">Início</a>
+      <a href="login.html">Entrar</a>
+    </nav>
+  </header>
+
+  <!-- ===== Cadastro ===== -->
+  <main class="cadastro-container">
+    <div class="cadastro-box">
+      <h2>Criar nova conta</h2>
+      <form onsubmit="return registrarUsuario(event)">
+        <input type="text" id="nome" placeholder="Nome completo" required />
+        <input type="email" id="email" placeholder="E-mail" required />
+        <input type="password" id="senha" placeholder="Senha" required />
+        <input type="password" id="confirmar" placeholder="Confirmar senha" required />
+        <button type="submit">Cadastrar</button>
+      </form>
+      <p>Já tem conta? <a href="login.html">Entrar</a></p>
+    </div>
+  </main>
+
+  <!-- ===== Script ===== -->
+  <script>
+    function registrarUsuario(e) {
+      e.preventDefault();
+      const nome = document.getElementById("nome").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const senha = document.getElementById("senha").value.trim();
+      const confirmar = document.getElementById("confirmar").value.trim();
+
+      if (!nome || !email || !senha || !confirmar) {
+        alert("Preencha todos os campos.");
+        return false;
+      }
+
+      if (senha !== confirmar) {
+        alert("As senhas não coincidem.");
+        return false;
+      }
+
+      // Simulação de cadastro
+      alert(`Conta criada com sucesso, ${nome}!`);
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>

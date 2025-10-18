@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Loja — JM.NÁUTICA</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">JM.NÁUTICA</div>
+    <div class="controls">
+      <input id="search" placeholder="Buscar produto..." aria-label="buscar">
+      <button id="dark-toggle" title="Modo escuro">🌙</button>
+      <button id="cart-toggle" aria-label="Abrir carrinho">🛒</button>
+      <a href="index.html" class="btn-link" title="Cadastrar">Cadastrar</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="product-section">
+      <div class="section-inner">
+        <div class="section-header">
+          <div>
+            <h2 id="novos-title">Novos</h2>
+            <p class="section-sub">Peças novas e originais — entrega rápida.</p>
+          </div>
+          <div class="section-actions">
+            <button class="scroll-btn scroll-left" data-target="lista-novos" aria-label="Rolar Novos para a esquerda">‹</button>
+            <button class="scroll-btn scroll-right" data-target="lista-novos" aria-label="Rolar Novos para a direita">›</button>
+          </div>
+        </div>
+        <div class="product-list-wrapper" role="region" aria-labelledby="novos-title">
+          <div id="lista-novos" class="product-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="product-section alt">
+      <div class="section-inner">
+        <div class="section-header">
+          <div>
+            <h2 id="seminovos-title">Seminovos</h2>
+            <p class="section-sub">Peças em ótimo estado com ótimo custo-benefício.</p>
+          </div>
+          <div class="section-actions">
+            <button class="scroll-btn scroll-left" data-target="lista-seminovos" aria-label="Rolar Seminovos para a esquerda">‹</button>
+            <button class="scroll-btn scroll-right" data-target="lista-seminovos" aria-label="Rolar Seminovos para a direita">›</button>
+          </div>
+        </div>
+        <div class="product-list-wrapper" role="region" aria-labelledby="seminovos-title">
+          <div id="lista-seminovos" class="product-list"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <aside id="carrinho" class="carrinho"></aside>
+
+  <button id="btn-whatsapp-float" class="whatsapp-float" type="button" aria-label="Conversar via WhatsApp" title="Conversar via WhatsApp">
+    <img src="imagens/WhatsApp.svg" alt="WhatsApp" class="whatsapp-logo">
+  </button>
+
+  <script src="script.js"></script>
+</body>
+</html>

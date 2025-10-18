@@ -3,60 +3,40 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>JM.Náutica Store</title>
+  <title>JM.NÁUTICA</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+
   <header class="navbar">
-    <div class="logo">JM.Náutica Store</div>
+    <div class="logo">JM.NÁUTICA</div>
     <div class="controls">
       <input id="search" placeholder="Buscar produto..." aria-label="buscar">
       <button id="dark-toggle" title="Modo escuro">🌙</button>
       <button id="cart-toggle" aria-label="Abrir carrinho">🛒</button>
-      <!-- botão área restrita -->
       <button id="area-restrita" class="btn-link" type="button" aria-label="Área restrita">Área restrita</button>
     </div>
   </header>
 
-  <main>
-    <section class="product-section">
-      <div class="section-inner">
-        <div class="section-header">
-          <div>
-            <h2 id="novos-title">Novos</h2>
-            <p class="section-sub">Peças novas e originais — entrega rápida.</p>
-          </div>
-          <div class="section-actions">
-            <button class="scroll-btn scroll-left" data-target="lista-novos" aria-label="Rolar Novos para a esquerda">‹</button>
-            <button class="scroll-btn scroll-right" data-target="lista-novos" aria-label="Rolar Novos para a direita">›</button>
-          </div>
-        </div>
+  <!-- Cadastro como página principal -->
+  <main class="cadastro-container">
+    <div class="cadastro-box">
+      <h2>Criar nova conta</h2>
+      <form id="cadastro-form" onsubmit="return registrarUsuario(event)">
+        <input type="text" id="nome" name="nome" placeholder="Nome completo" required />
+        <input type="email" id="email" name="email" placeholder="E-mail" required />
+        <input type="password" id="senha" name="senha" placeholder="Senha" required />
+        <input type="password" id="confirmar" name="confirmar" placeholder="Confirmar senha" required />
+        <button type="submit" class="btn-primary">Cadastrar</button>
+      </form>
 
-        <div class="product-list-wrapper" role="region" aria-labelledby="novos-title">
-          <div id="lista-novos" class="product-list"></div>
-        </div>
+      <div style="margin-top:12px; display:flex; gap:8px; align-items:center;">
+        <p style="margin:0">Já tem conta? <a href="login.html">Entrar</a></p>
+        <!-- NOVO: botão Entrar sem conta -->
+        <button id="guest-entry" type="button" class="btn-secondary" style="margin-left:12px;">Entrar sem conta</button>
       </div>
-    </section>
-
-    <section class="product-section alt">
-      <div class="section-inner">
-        <div class="section-header">
-          <div>
-            <h2 id="seminovos-title">Seminovos</h2>
-            <p class="section-sub">Peças em ótimo estado com ótimo custo-benefício.</p>
-          </div>
-          <div class="section-actions">
-            <button class="scroll-btn scroll-left" data-target="lista-seminovos" aria-label="Rolar Seminovos para a esquerda">‹</button>
-            <button class="scroll-btn scroll-right" data-target="lista-seminovos" aria-label="Rolar Seminovos para a direita">›</button>
-          </div>
-        </div>
-
-        <div class="product-list-wrapper" role="region" aria-labelledby="seminovos-title">
-          <div id="lista-seminovos" class="product-list"></div>
-        </div>
-      </div>
-    </section>
+    </div>
   </main>
 
   <aside id="carrinho" class="carrinho"></aside>
@@ -78,6 +58,43 @@
       </form>
     </div>
   </div>
+
+  <script>
+    // função de cadastro (mesma lógica do arquivo cadastro.html)
+    function registrarUsuario(e) {
+      e.preventDefault();
+      const nome = document.getElementById("nome").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const senha = document.getElementById("senha").value.trim();
+      const confirmar = document.getElementById("confirmar").value.trim();
+
+      if (!nome || !email || !senha || !confirmar) {
+        alert("Preencha todos os campos.");
+        return false;
+      }
+
+      if (senha !== confirmar) {
+        alert("As senhas não coincidem.");
+        return false;
+      }
+
+      // Simulação de cadastro - ajustar para chamada real à API quando existir
+      alert(`Conta criada com sucesso, ${nome}!`);
+      window.location.href = "login.html";
+      return true;
+    }
+
+    // NOVO: botão entrar sem conta -> marca guest e redireciona para loja
+    (function(){
+      const g = document.getElementById('guest-entry');
+      if (g) {
+        g.addEventListener('click', () => {
+          try { sessionStorage.setItem('guest', '1'); } catch(e){ /* ignore */ }
+          window.location.href = 'loja.html';
+        });
+      }
+    })();
+  </script>
 
   <script src="script.js"></script>
 </body>
