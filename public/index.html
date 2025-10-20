@@ -2,100 +2,18 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="refresh" content="0;url=loja.html">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>JM.NÁUTICA</title>
+  <title>Redirecionando — JM.NÁUTICA</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>window.location.replace('loja.html');</script>
 </head>
 <body>
-
-  <header class="navbar">
-    <div class="logo">JM.NÁUTICA</div>
-    <div class="controls">
-      <input id="search" placeholder="Buscar produto..." aria-label="buscar">
-      <button id="dark-toggle" title="Modo escuro">🌙</button>
-      <button id="cart-toggle" aria-label="Abrir carrinho">🛒</button>
-      <button id="area-restrita" class="btn-link" type="button" aria-label="Área restrita">Área restrita</button>
-    </div>
-  </header>
-
-  <!-- Cadastro como página principal -->
-  <main class="cadastro-container">
-    <div class="cadastro-box">
-      <h2>Criar nova conta</h2>
-      <form id="cadastro-form" onsubmit="return registrarUsuario(event)">
-        <input type="text" id="nome" name="nome" placeholder="Nome completo" required />
-        <input type="email" id="email" name="email" placeholder="E-mail" required />
-        <input type="password" id="senha" name="senha" placeholder="Senha" required />
-        <input type="password" id="confirmar" name="confirmar" placeholder="Confirmar senha" required />
-        <button type="submit" class="btn-primary">Cadastrar</button>
-      </form>
-
-      <div style="margin-top:12px; display:flex; gap:8px; align-items:center;">
-        <p style="margin:0">Já tem conta? <a href="login.html">Entrar</a></p>
-        <!-- NOVO: botão Entrar sem conta -->
-        <button id="guest-entry" type="button" class="btn-secondary" style="margin-left:12px;">Entrar sem conta</button>
-      </div>
+  <main style="min-height:60vh;display:flex;align-items:center;justify-content:center;">
+    <div style="text-align:center;padding:20px;">
+      <h1>Redirecionando para a loja…</h1>
+      <p>Se não for redirecionado automaticamente, <a href="loja.html">clique aqui</a>.</p>
     </div>
   </main>
-
-  <aside id="carrinho" class="carrinho"></aside>
-
-  <button id="btn-whatsapp-float" class="whatsapp-float" type="button" aria-label="Conversar via WhatsApp" title="Conversar via WhatsApp">
-    <img src="imagens/WhatsApp.svg" alt="WhatsApp" class="whatsapp-logo">
-  </button>
-
-  <!-- Modal de login (aria-hidden inicia oculto) -->
-  <div id="modal-login" class="modal" aria-hidden="true">
-    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-      <button class="modal-close" id="modal-close" aria-label="Fechar">✕</button>
-      <h3 id="modal-title">Área Restrita - Login</h3>
-      <form id="modal-login-form">
-        <label>Usuário<input name="user" required></label>
-        <label>Senha<input name="pass" type="password" required></label>
-        <div style="margin-top:10px;"><button class="btn-primary" type="submit">Entrar</button></div>
-        <div id="modal-error" class="muted" style="color:#c0392b;display:none;"></div>
-      </form>
-    </div>
-  </div>
-
-  <script>
-    // função de cadastro (mesma lógica do arquivo cadastro.html)
-    function registrarUsuario(e) {
-      e.preventDefault();
-      const nome = document.getElementById("nome").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const senha = document.getElementById("senha").value.trim();
-      const confirmar = document.getElementById("confirmar").value.trim();
-
-      if (!nome || !email || !senha || !confirmar) {
-        alert("Preencha todos os campos.");
-        return false;
-      }
-
-      if (senha !== confirmar) {
-        alert("As senhas não coincidem.");
-        return false;
-      }
-
-      // Simulação de cadastro - ajustar para chamada real à API quando existir
-      alert(`Conta criada com sucesso, ${nome}!`);
-      window.location.href = "login.html";
-      return true;
-    }
-
-    // NOVO: botão entrar sem conta -> marca guest e redireciona para loja
-    (function(){
-      const g = document.getElementById('guest-entry');
-      if (g) {
-        g.addEventListener('click', () => {
-          try { sessionStorage.setItem('guest', '1'); } catch(e){ /* ignore */ }
-          window.location.href = 'loja.html';
-        });
-      }
-    })();
-  </script>
-
-  <script src="script.js"></script>
 </body>
 </html>

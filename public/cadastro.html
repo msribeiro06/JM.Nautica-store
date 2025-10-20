@@ -5,135 +5,94 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cadastrar | JM NÁUTICA</title>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    /* ===== Estilo adicional apenas para o cadastro ===== */
-    .cadastro-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: calc(100vh - 80px);
-      padding: 20px;
-    }
-
-    .cadastro-box {
-      background: rgba(11, 19, 43, 0.85);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 18px;
-      padding: 40px 50px;
-      width: 100%;
-      max-width: 450px;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
-      color: var(--text);
-      text-align: center;
-    }
-
-    .cadastro-box h2 {
-      margin-bottom: 20px;
-      color: var(--accent);
-      font-weight: 600;
-    }
-
-    .cadastro-box input {
-      width: 100%;
-      padding: 10px 12px;
-      margin-bottom: 14px;
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text);
-      font-size: 0.95rem;
-    }
-
-    .cadastro-box input::placeholder {
-      color: var(--muted);
-    }
-
-    .cadastro-box button {
-      width: 100%;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      padding: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      font-size: 1rem;
-    }
-
-    .cadastro-box button:hover {
-      background: #56d0ff;
-      transform: scale(1.03);
-    }
-
-    .cadastro-box p {
-      color: var(--muted);
-      font-size: 0.9rem;
-      margin-top: 10px;
-    }
-
-    .cadastro-box a {
-      color: var(--accent);
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    .cadastro-box a:hover {
-      text-decoration: underline;
-    }
-  </style>
 </head>
 
 <body>
-  <!-- ===== Navbar ===== -->
   <header class="navbar">
     <div class="logo">JM.NÁUTICA</div>
-    <nav>
-      <a href="index.html">Início</a>
-      <a href="login.html">Entrar</a>
-    </nav>
+    <div class="controls">
+      <a href="index.html" class="btn-link">Início</a>
+      <a href="loja.html" class="btn-link">Loja</a>
+    </div>
   </header>
 
-  <!-- ===== Cadastro ===== -->
   <main class="cadastro-container">
-    <div class="cadastro-box">
-      <h2>Criar nova conta</h2>
-      <form onsubmit="return registrarUsuario(event)">
-        <input type="text" id="nome" placeholder="Nome completo" required />
-        <input type="email" id="email" placeholder="E-mail" required />
-        <input type="password" id="senha" placeholder="Senha" required />
-        <input type="password" id="confirmar" placeholder="Confirmar senha" required />
-        <button type="submit">Cadastrar</button>
+    <div class="cadastro-box" role="region" aria-labelledby="cad-title">
+      <h1 id="cad-title">Criar conta</h1>
+      <p class="muted">Cadastre-se para acompanhar pedidos e acessar área restrita.</p>
+
+      <form id="cadastro-form" class="cad-form" novalidate>
+        <label class="field">
+          <span class="label">Nome completo</span>
+          <input id="nome" name="nome" type="text" required autocomplete="name" />
+        </label>
+
+        <label class="field">
+          <span class="label">E‑mail</span>
+          <input id="email" name="email" type="email" required autocomplete="email" />
+        </label>
+
+        <label class="field">
+          <span class="label">Senha</span>
+          <input id="senha" name="senha" type="password" required autocomplete="new-password" minlength="6" />
+        </label>
+
+        <label class="field">
+          <span class="label">Confirmar senha</span>
+          <input id="confirmar" name="confirmar" type="password" required autocomplete="new-password" minlength="6" />
+        </label>
+
+        <div class="cad-actions">
+          <button id="cad-submit" class="btn-primary" type="submit">Cadastrar</button>
+          <button id="guest-entry" class="btn-secondary" type="button">Entrar sem conta</button>
+        </div>
+
+        <div id="cad-error" role="alert" aria-live="assertive" class="muted error" hidden></div>
       </form>
-      <p>Já tem conta? <a href="login.html">Entrar</a></p>
+
+      <p class="muted" style="margin-top:12px">Já tem conta? <a href="login.html">Entrar</a></p>
     </div>
   </main>
 
-  <!-- ===== Script ===== -->
   <script>
-    function registrarUsuario(e) {
+  (function(){
+    const form = document.getElementById('cadastro-form');
+    const err = document.getElementById('cad-error');
+    const submitBtn = document.getElementById('cad-submit');
+
+    form.addEventListener('submit', (e) => {
       e.preventDefault();
-      const nome = document.getElementById("nome").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const senha = document.getElementById("senha").value.trim();
-      const confirmar = document.getElementById("confirmar").value.trim();
+      err.hidden = true;
+      submitBtn.disabled = true;
+      const nome = form.nome.value.trim();
+      const email = form.email.value.trim();
+      const senha = form.senha.value;
+      const confirmar = form.confirmar.value;
 
       if (!nome || !email || !senha || !confirmar) {
-        alert("Preencha todos os campos.");
-        return false;
+        err.textContent = 'Preencha todos os campos.';
+        err.hidden = false;
+        submitBtn.disabled = false;
+        return;
       }
-
       if (senha !== confirmar) {
-        alert("As senhas não coincidem.");
-        return false;
+        err.textContent = 'As senhas não coincidem.';
+        err.hidden = false;
+        submitBtn.disabled = false;
+        return;
       }
 
-      // Simulação de cadastro
-      alert(`Conta criada com sucesso, ${nome}!`);
-      window.location.href = "login.html";
-    }
+      // simulação — substituir por fetch('/auth/register', ...)
+      sessionStorage.setItem('user', JSON.stringify({ nome, email }));
+      window.location.href = 'loja.html';
+    });
+
+    const guest = document.getElementById('guest-entry');
+    if (guest) guest.addEventListener('click', () => {
+      sessionStorage.setItem('guest', '1');
+      window.location.href = 'loja.html';
+    });
+  })();
   </script>
 </body>
 </html>

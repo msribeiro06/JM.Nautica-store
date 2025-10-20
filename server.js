@@ -65,8 +65,13 @@ app.post('/api/upload', requireAuth, basicUpload.array('files', 12), (req,res)=>
 // simple checkout mock
 app.post('/checkout', (req,res)=>{ const items = req.body.items || []; if(items.length===0) return res.status(400).json({error:'empty'}); return res.json({ok:true,checkoutUrl:'/mock-checkout.html'}); });
 app.get('/login', (req,res)=>{ res.sendFile(path.join(__dirname,'public','login.html')); });
+// healthcheck simples (útil para Render)
+app.get('/health', (req, res) => res.json({ status: 'ok', time: Date.now() }));
+
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, ()=>console.log('Servidor rodando em http://localhost:'+PORT));
+app.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT} (env=${process.env.NODE_ENV || 'dev'})`);
+});
 
 // security & performance middlewares
 const helmet = require('helmet');
