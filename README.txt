@@ -1,8 +1,2 @@
-Náutica Store v12 PRO
-
-Como rodar:
-1) npm install
-2) npm start
-Admin: admin / nautica2025
-Frontend público: http://localhost:3000
-Painel admin: http://localhost:3000/painel/dashboard.html (login via modal 'Área Restrita')
+A ausência de uma plataforma moderna dificultava a exposição e venda de peças náuticas, além de tornar o atendimento lento e pouco integrado aos canais de contato da empresa. Foi desenvolvido uma solução web completa, que centralizasse catálogo de produtos novos e seminovos, facilitasse o atendimento ao cliente e otimizasse o gerenciamento interno da loja.A ação mais acertiva tomada foram: Criação de uma landing page responsiva com design marítimo minimalista, implementação de um catálogo dinâmico com divisão entre produtos novos e seminovos, desenvolvimento de um painel administrativo (CRUD completo) com controle de estoque, estatísticas e upload de imagens, integração direta com a API do WhatsApp para atendimento e orçamentos instantâneos, estruturação do backend com Node.js e Express, autenticação segura e sistema de permissões para administradores e clientes.
+ Dada as medidas tomadas os resultado que puderam ser analisado foram: Redução significativa no tempo de resposta e fechamento de vendas, maior eficiência no controle de estoque e atualização de produtos, interface intuitiva e moderna, proporcionando melhor experiência ao usuário, sistema totalmente funcional e escalável, pronto para deploy em múltiplas plataformas (Ubuntu e Windows).
