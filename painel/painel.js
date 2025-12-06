@@ -42,7 +42,7 @@
       row.className='prod-row';
       row.innerHTML = `
         <div style="display:flex;gap:8px;align-items:center">
-          <img class="prod-thumb" src="${p.imagem||'/public/imagens/placeholder.png'}">
+          <img class="prod-thumb" src="${p.imagem||'/imagens/placeholder.png'}">
           <div>
             <strong>${p.nome}</strong>
             <div class="muted">Estoque: ${p.estoque} • ${p.categoria}</div>
