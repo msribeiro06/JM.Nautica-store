@@ -1,7 +1,6 @@
 // server.js — ponto de entrada da aplicação
 
 require('dotenv').config();
-
 const express      = require('express');
 const helmet       = require('helmet');
 const compression  = require('compression');
@@ -15,6 +14,9 @@ const rotasAuth     = require('./src/routes/auth');
 const rotasUpload = require('./src/routes/upload');
 const app  = express();
 const PORT = process.env.PORT || 3000;
+
+// Necessário para Railway/proxies reversos
+app.set('trust proxy', 1);
 
 // ─── Segurança ───────────────────────────────────────────────────
 app.use(helmet({
