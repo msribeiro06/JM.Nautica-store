@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JM Náutica — Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --deep:  #020c1a;
+      --ocean: #051828;
+      --mid:   #0a2438;
+      --gold:  #c8a94a;
+      --gold2: #e8cc7a;
+      --white: #f0f4f8;
+      --muted: #5a7a96;
+      --err:   #e05c5c;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--deep); color: var(--white);
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Canvas oceano */
+    #ocean { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.4; }
+
+    /* Grade carta náutica */
+    .chart {
+      position: fixed; inset: 0; z-index: 1; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(200,169,74,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(200,169,74,0.03) 1px, transparent 1px);
+      background-size: 64px 64px;
+    }
+
+    .login-wrap {
+      position: relative; z-index: 10;
+      width: 100%; max-width: 420px;
+      padding: 2rem;
+      animation: fadeUp 0.7s ease both;
+    }
+
+    .login-header { text-align: center; margin-bottom: 2.5rem; }
+    .login-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem; font-weight: 700; color: var(--gold);
+      letter-spacing: 0.06em; margin-bottom: 0.3rem;
+    }
+    .login-sub { font-size: 0.78rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+
+    .login-card {
+      background: rgba(10,36,56,0.85);
+      border: 1px solid rgba(200,169,74,0.15);
+      border-radius: 16px; padding: 2.5rem;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+    }
+
+    .field { margin-bottom: 1.2rem; }
+    .field label {
+      display: block; font-size: 0.75rem; font-weight: 500;
+      color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .field input {
+      width: 100%; background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--white); border-radius: 10px;
+      padding: 0.75rem 1rem; font-family: 'Outfit', sans-serif;
+      font-size: 0.9rem; font-weight: 300; outline: none;
+      transition: border-color 0.2s;
+    }
+    .field input:focus { border-color: rgba(200,169,74,0.5); }
+    .field input::placeholder { color: var(--muted); }
+
+    .btn-login {
+      width: 100%; background: var(--gold); color: var(--deep);
+      border: none; border-radius: 10px; padding: 0.85rem;
+      font-family: 'Outfit', sans-serif; font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; transition: all 0.25s; margin-top: 0.5rem;
+      letter-spacing: 0.03em; position: relative; overflow: hidden;
+    }
+    .btn-login:hover { background: var(--gold2); transform: translateY(-1px); }
+    .btn-login:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .erro-msg {
+      background: rgba(224,92,92,0.1); border: 1px solid rgba(224,92,92,0.3);
+      color: var(--err); border-radius: 8px; padding: 0.7rem 1rem;
+      font-size: 0.82rem; margin-top: 1rem; display: none;
+    }
+    .erro-msg.show { display: block; }
+
+    .back-link {
+      display: block; text-align: center; margin-top: 1.5rem;
+      color: var(--muted); font-size: 0.78rem; text-decoration: none;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--gold); }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body>
+  <canvas id="ocean"></canvas>
+  <div class="chart"></div>
+
+  <div class="login-wrap">
+    <div class="login-header">
+      <div class="login-logo">⚓ JM Náutica</div>
+      <div class="login-sub">Painel Administrativo</div>
+    </div>
+
+    <div class="login-card">
+      <div class="field">
+        <label>E-mail</label>
+        <input type="email" id="email" placeholder="admin@nautica.com" />
+      </div>
+      <div class="field">
+        <label>Senha</label>
+        <input type="password" id="senha" placeholder="••••••••" />
+      </div>
+      <button class="btn-login" id="btn-login">Entrar no painel</button>
+      <div class="erro-msg" id="erro"></div>
+    </div>
+
+    <a class="back-link" href="/">← Voltar para a loja</a>
+  </div>
+
+  <script>
+    /* Oceano animado (simplificado) */
+    const cv = document.getElementById('ocean');
+    const cx = cv.getContext('2d');
+    let W, H, T = 0;
+    const resize = () => { W = cv.width = innerWidth; H = cv.height = innerHeight; };
+    addEventListener('resize', resize); resize();
+    const waves = [
+      { amp: 35, frq: 0.007, spd: 0.5, y: 0.55, op: 0.06, r: 14, g: 75, b: 140 },
+      { amp: 22, frq: 0.013, spd: 0.9, y: 0.65, op: 0.04, r: 8,  g: 50, b: 100 },
+      { amp: 50, frq: 0.004, spd: 0.3, y: 0.42, op: 0.03, r: 20, g: 90, b: 170 },
+    ];
+    function draw() {
+      cx.clearRect(0, 0, W, H);
+      const bg = cx.createLinearGradient(0, 0, 0, H);
+      bg.addColorStop(0, '#020c1a'); bg.addColorStop(1, '#071e32');
+      cx.fillStyle = bg; cx.fillRect(0, 0, W, H);
+      waves.forEach(w => {
+        cx.beginPath(); cx.moveTo(0, H);
+        for (let x = 0; x <= W; x += 4) {
+          const y = w.y * H + Math.sin(x * w.frq + T * w.spd) * w.amp;
+          cx.lineTo(x, y);
+        }
+        cx.lineTo(W, H); cx.closePath();
+        cx.fillStyle = `rgba(${w.r},${w.g},${w.b},${w.op})`; cx.fill();
+      });
+      T += 0.008; requestAnimationFrame(draw);
+    }
+    draw();
+
+    /* Login */
+    const btn   = document.getElementById('btn-login');
+    const erro  = document.getElementById('erro');
+
+    // Redireciona se já estiver logado
+    if (localStorage.getItem('nautica_token')) {
+      window.location.href = '/painel/dashboard.html';
+    }
+
+    document.getElementById('senha').addEventListener('keydown', e => {
+      if (e.key === 'Enter') fazerLogin();
+    });
+
+    btn.addEventListener('click', fazerLogin);
+
+    async function fazerLogin() {
+      const email = document.getElementById('email').value.trim();
+      const senha = document.getElementById('senha').value;
+
+      if (!email || !senha) {
+        mostrarErro('Preencha e-mail e senha.');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Entrando...';
+      erro.classList.remove('show');
+
+      try {
+        const res  = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, senha }),
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          mostrarErro(data.erro || 'Erro ao fazer login.');
+          return;
+        }
+
+        localStorage.setItem('nautica_token', data.token);
+        localStorage.setItem('nautica_usuario', JSON.stringify(data.usuario));
+        window.location.href = '/painel/dashboard.html';
+      } catch {
+        mostrarErro('Erro de conexão com o servidor.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Entrar no painel';
+      }
+    }
+
+    function mostrarErro(msg) {
+      erro.textContent = msg;
+      erro.classList.add('show');
+    }
+  </script>
+</body>
+</html>

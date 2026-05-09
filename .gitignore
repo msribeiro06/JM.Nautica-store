@@ -1,2 +1,31 @@
-.env
+# Dependências
 node_modules/
+
+# Variáveis de ambiente — NUNCA commitar!
+.env
+.env.local
+.env.production
+
+# Uploads locais
+uploads/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Sistemas operacionais
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Build
+dist/
+build/
+
+# Chaves e certificados
+*.pem
+*.key
+gcs-key.json

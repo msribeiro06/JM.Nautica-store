@@ -1,0 +1,14 @@
+# railway.toml — configuração de deploy no Railway
+# Documentação: https://docs.railway.app/reference/config-as-code
+
+[build]
+builder = "NIXPACKS"
+
+[deploy]
+startCommand = "node server.js"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
+
+[environments.production]
+DB_SSL = "true"
+NODE_ENV = "production"

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Página não encontrada — JM Náutica</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <style>
+    :root { --deep:#020c1a; --gold:#c8a94a; --gold2:#e8cc7a; --white:#f0f4f8; --muted:#5a7a96; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Outfit', sans-serif; background: var(--deep); color: var(--white); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
+
+    canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.4; }
+
+    .chart {
+      position: fixed; inset: 0; z-index: 1; pointer-events: none;
+      background-image: linear-gradient(rgba(200,169,74,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(200,169,74,0.03) 1px, transparent 1px);
+      background-size: 64px 64px;
+    }
+
+    .wrap { position: relative; z-index: 10; text-align: center; padding: 2rem; max-width: 500px; animation: up 0.8s ease both; }
+
+    .anchor-big { font-size: 6rem; opacity: 0.12; display: block; margin-bottom: 1rem; animation: float 3s ease-in-out infinite; }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+
+    .code { font-family: 'Cormorant Garamond', serif; font-size: 5rem; font-weight: 700; color: var(--gold); line-height: 1; margin-bottom: 0.5rem; }
+    h1 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 700; margin-bottom: 0.8rem; }
+    p { color: var(--muted); font-size: 0.9rem; font-weight: 300; line-height: 1.7; margin-bottom: 2rem; }
+
+    .divider { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: linear-gradient(to right, transparent, rgba(200,169,74,0.3), transparent); }
+    .divider span { font-size: 0.65rem; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; white-space: nowrap; }
+
+    .btn-home {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--gold); color: var(--deep);
+      padding: 0.85rem 2rem; border-radius: 100px;
+      font-weight: 600; font-size: 0.9rem; text-decoration: none;
+      transition: all 0.25s; margin-bottom: 1rem;
+    }
+    .btn-home:hover { background: var(--gold2); transform: translateY(-2px); }
+
+    .btn-wpp {
+      display: inline-flex; align-items: center; gap: 8px;
+      border: 1px solid rgba(37,211,102,0.3); color: #5ddb8a;
+      padding: 0.75rem 1.8rem; border-radius: 100px;
+      font-size: 0.85rem; text-decoration: none; transition: all 0.25s;
+    }
+    .btn-wpp:hover { background: rgba(37,211,102,0.08); }
+
+    .actions { display: flex; flex-direction: column; align-items: center; gap: 0.7rem; }
+
+    @keyframes up { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+  </style>
+</head>
+<body>
+  <canvas id="cv"></canvas>
+  <div class="chart"></div>
+
+  <div class="wrap">
+    <span class="anchor-big">⚓</span>
+    <div class="code">404</div>
+    <h1>Página não encontrada</h1>
+    <p>Parece que essa página foi levada pela maré. Volte ao catálogo e encontre a peça que precisa.</p>
+
+    <div class="divider"><span>O que deseja fazer?</span></div>
+
+    <div class="actions">
+      <a class="btn-home" href="/">← Voltar ao catálogo</a>
+      <a class="btn-wpp" href="https://wa.me/5592999999999" target="_blank" id="wpp-link">💬 Falar no WhatsApp</a>
+    </div>
+  </div>
+
+  <script>
+    // Atualiza o número do WhatsApp dinamicamente
+    fetch('/api/config').then(r => r.json()).then(d => {
+      if (d.whatsapp) document.getElementById('wpp-link').href = `https://wa.me/${d.whatsapp}`;
+    }).catch(() => {});
+
+    // Oceano animado
+    const cv = document.getElementById('cv');
+    const cx = cv.getContext('2d');
+    let W, H, T = 0;
+    const resize = () => { W = cv.width = innerWidth; H = cv.height = innerHeight; };
+    addEventListener('resize', resize); resize();
+    const waves = [
+      {amp:35,frq:0.007,spd:0.5,y:0.55,op:0.06,r:14,g:75,b:140},
+      {amp:22,frq:0.013,spd:0.9,y:0.65,op:0.04,r:8,g:50,b:100},
+    ];
+    function draw() {
+      cx.clearRect(0,0,W,H);
+      const bg=cx.createLinearGradient(0,0,0,H); bg.addColorStop(0,'#020c1a'); bg.addColorStop(1,'#071e32');
+      cx.fillStyle=bg; cx.fillRect(0,0,W,H);
+      waves.forEach(w=>{
+        cx.beginPath(); cx.moveTo(0,H);
+        for(let x=0;x<=W;x+=4){cx.lineTo(x,w.y*H+Math.sin(x*w.frq+T*w.spd)*w.amp);}
+        cx.lineTo(W,H); cx.closePath();
+        cx.fillStyle=`rgba(${w.r},${w.g},${w.b},${w.op})`; cx.fill();
+      });
+      T+=0.008; requestAnimationFrame(draw);
+    }
+    draw();
+  </script>
+</body>
+</html>

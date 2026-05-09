@@ -1,57 +1,588 @@
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Painel - Náutica Store PRO</title>
-  <link rel="stylesheet" href="/painel/painel.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Dashboard — JM Náutica Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --deep:  #020c1a; --ocean: #051828; --mid: #0a2438;
+      --gold:  #c8a94a; --gold2: #e8cc7a; --white: #f0f4f8;
+      --muted: #5a7a96; --green: #3db87a; --red: #e05c5c;
+      --border: rgba(200,169,74,0.1); --r: 12px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body { font-family: 'Outfit', sans-serif; background: var(--deep); color: var(--white); }
+
+    /* ── TOPBAR MOBILE ── */
+    .topbar {
+      position: sticky; top: 0; z-index: 200;
+      background: rgba(2,12,26,0.97); border-bottom: 1px solid var(--border);
+      padding: 0.9rem 1.2rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .topbar-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; color: var(--gold); }
+    .topbar-right { display: flex; align-items: center; gap: 0.8rem; }
+    .btn-novo-top {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--gold); color: var(--deep);
+      border: none; padding: 0.5rem 1rem; border-radius: 8px;
+      font-family: 'Outfit', sans-serif; font-size: 0.8rem; font-weight: 600;
+      cursor: pointer; white-space: nowrap;
+    }
+    .btn-logout-top {
+      background: transparent; border: 1px solid rgba(224,92,92,0.3);
+      color: rgba(224,92,92,0.7); padding: 0.48rem 0.8rem;
+      border-radius: 8px; font-family: 'Outfit', sans-serif;
+      font-size: 0.75rem; cursor: pointer; white-space: nowrap;
+    }
+
+    /* ── CONTENT ── */
+    .content { padding: 1.5rem 1rem 6rem; max-width: 1100px; margin: 0 auto; }
+
+    /* ── STATS ── */
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 0.8rem; margin-bottom: 1.5rem;
+    }
+    .stat-card {
+      background: var(--mid); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 1rem 1.1rem; position: relative; overflow: hidden;
+    }
+    .stat-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(to right, var(--gold), transparent);
+    }
+    .stat-label { font-size: 0.68rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.4rem; }
+    .stat-value { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 700; color: var(--gold); line-height: 1; }
+    .stat-desc  { font-size: 0.68rem; color: var(--muted); margin-top: 3px; }
+
+    /* ── FILTROS ── */
+    .table-wrap { background: var(--mid); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
+    .table-header { padding: 1rem 1.1rem; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 0.7rem; }
+    .table-title { font-size: 0.88rem; font-weight: 500; }
+    .table-filters { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .filter-input {
+      flex: 1; min-width: 140px;
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      color: var(--white); border-radius: 8px; padding: 0.45rem 0.8rem;
+      font-family: 'Outfit', sans-serif; font-size: 0.8rem; outline: none;
+    }
+    .filter-input:focus { border-color: rgba(200,169,74,0.4); }
+    .filter-input::placeholder { color: var(--muted); }
+    .filter-select {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      color: var(--white); border-radius: 8px; padding: 0.45rem 0.7rem;
+      font-family: 'Outfit', sans-serif; font-size: 0.8rem; outline: none; cursor: pointer;
+    }
+    .filter-select option { background: var(--mid); }
+
+    /* ── LISTA DE PRODUTOS (cards no mobile) ── */
+    .prod-list { padding: 0.5rem; display: flex; flex-direction: column; gap: 0.6rem; }
+
+    .prod-item {
+      background: rgba(14,48,80,0.4); border: 1px solid rgba(200,169,74,0.08);
+      border-radius: 10px; padding: 0.8rem;
+      display: flex; align-items: center; gap: 0.8rem;
+      transition: border-color 0.2s;
+    }
+    .prod-item:hover { border-color: rgba(200,169,74,0.25); }
+
+    .prod-img {
+      width: 52px; height: 52px; border-radius: 8px;
+      object-fit: cover; flex-shrink: 0; background: var(--mid);
+      display: flex; align-items: center; justify-content: center; font-size: 1.4rem;
+    }
+    .prod-img img { width: 52px; height: 52px; border-radius: 8px; object-fit: cover; display: block; }
+
+    .prod-info { flex: 1; min-width: 0; }
+    .prod-nome { font-weight: 500; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px; }
+    .prod-meta { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 100px; font-size: 0.62rem; font-weight: 500; }
+    .badge-novo     { background: rgba(61,184,122,0.12); color: var(--green); border: 1px solid rgba(61,184,122,0.25); }
+    .badge-seminovo { background: rgba(200,169,74,0.12); color: var(--gold2); border: 1px solid rgba(200,169,74,0.25); }
+    .prod-preco { font-size: 0.78rem; color: var(--gold); font-family: 'Cormorant Garamond', serif; font-weight: 600; }
+    .prod-clicks { font-size: 0.7rem; color: var(--muted); }
+
+    .prod-actions { display: flex; flex-direction: column; gap: 0.4rem; flex-shrink: 0; }
+    .btn-edit, .btn-del {
+      padding: 0.32rem 0.7rem; border-radius: 6px; border: none;
+      font-family: 'Outfit', sans-serif; font-size: 0.72rem; font-weight: 500; cursor: pointer;
+    }
+    .btn-edit { background: rgba(200,169,74,0.12); color: var(--gold2); }
+    .btn-edit:hover { background: rgba(200,169,74,0.22); }
+    .btn-del  { background: rgba(224,92,92,0.1);  color: var(--red); }
+    .btn-del:hover  { background: rgba(224,92,92,0.2); }
+
+    /* Desktop: tabela */
+    @media (min-width: 769px) {
+      .content { padding: 2rem 2rem 4rem; }
+      .stats-grid { grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+      .stat-value { font-size: 2.2rem; }
+      .table-header { flex-direction: row; align-items: center; }
+      .prod-list { padding: 0; }
+      .prod-item { border-radius: 0; border-left: none; border-right: none; border-top: none; background: transparent; padding: 0.75rem 1rem; }
+      .prod-item:first-child { border-top: none; }
+    }
+
+    /* ── MODAL ── */
+    .modal-bg {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(2,12,26,0.9); backdrop-filter: blur(4px);
+      display: flex; align-items: flex-end; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.25s;
+    }
+    .modal-bg.open { opacity: 1; pointer-events: all; }
+
+    .modal {
+      background: var(--mid); border: 1px solid var(--border);
+      border-radius: 16px 16px 0 0; width: 100%; max-width: 600px;
+      max-height: 92vh; overflow-y: auto;
+      transform: translateY(100%); transition: transform 0.3s ease;
+    }
+    .modal-bg.open .modal { transform: translateY(0); }
+
+    /* Desktop: modal centralizado */
+    @media (min-width: 600px) {
+      .modal-bg { align-items: center; }
+      .modal { border-radius: 16px; transform: translateY(20px); max-height: 90vh; }
+      .modal-bg.open .modal { transform: translateY(0); }
+    }
+
+    .modal-handle { width: 36px; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.1); margin: 0.8rem auto; }
+    .modal-head { padding: 0.5rem 1.4rem 1rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .modal-head h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 700; }
+    .modal-close { background: none; border: none; color: var(--muted); font-size: 1.2rem; cursor: pointer; padding: 4px; }
+
+    .modal-body { padding: 1.3rem 1.4rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; }
+    .form-field { margin-bottom: 1rem; }
+    .form-field.full { grid-column: 1/-1; }
+    .form-field label { display: block; font-size: 0.7rem; font-weight: 500; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.4rem; }
+    .form-field input, .form-field select, .form-field textarea {
+      width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      color: var(--white); border-radius: 8px; padding: 0.65rem 0.9rem;
+      font-family: 'Outfit', sans-serif; font-size: 0.85rem; font-weight: 300;
+      outline: none; transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+    .form-field select option { background: var(--mid); }
+    .form-field textarea { resize: vertical; min-height: 75px; }
+    .form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: rgba(200,169,74,0.45); }
+    .form-field input::placeholder, .form-field textarea::placeholder { color: var(--muted); }
+
+    @media (max-width: 500px) {
+      .form-row { grid-template-columns: 1fr; }
+    }
+
+    /* Upload de imagem */
+    .upload-area {
+      border: 2px dashed rgba(200,169,74,0.2); border-radius: 10px;
+      padding: 1.5rem; text-align: center; cursor: pointer;
+      transition: border-color 0.2s; position: relative;
+    }
+    .upload-area:hover { border-color: rgba(200,169,74,0.4); }
+    .upload-area input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .upload-icon { font-size: 1.8rem; margin-bottom: 0.4rem; opacity: 0.5; }
+    .upload-text { font-size: 0.8rem; color: var(--muted); }
+    .upload-text strong { color: var(--gold2); }
+
+    .img-preview-wrap { margin-top: 0.8rem; display: none; }
+    .img-preview-wrap.show { display: block; }
+    .img-preview {
+      width: 100%; max-height: 180px; object-fit: cover;
+      border-radius: 8px; display: block;
+    }
+    .upload-progress {
+      margin-top: 0.5rem; height: 3px; background: rgba(255,255,255,0.08);
+      border-radius: 2px; overflow: hidden; display: none;
+    }
+    .upload-progress.show { display: block; }
+    .upload-bar { height: 100%; background: var(--gold); border-radius: 2px; width: 0%; transition: width 0.3s; }
+    .upload-status { font-size: 0.72rem; color: var(--muted); margin-top: 0.3rem; }
+
+    .form-check { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; }
+    .form-check input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--gold); cursor: pointer; flex-shrink: 0; }
+    .form-check label { font-size: 0.85rem; color: rgba(240,244,248,0.7); cursor: pointer; }
+
+    .modal-foot { padding: 1rem 1.4rem; border-top: 1px solid var(--border); display: flex; gap: 0.7rem; }
+    .btn-cancel { flex: 1; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: var(--muted); padding: 0.7rem; border-radius: 8px; font-family: 'Outfit', sans-serif; font-size: 0.85rem; cursor: pointer; }
+    .btn-save { flex: 2; background: var(--gold); color: var(--deep); border: none; padding: 0.7rem; border-radius: 8px; font-family: 'Outfit', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+    .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Confirm modal */
+    .confirm-modal .modal-body p { font-size: 0.88rem; color: rgba(240,244,248,0.65); line-height: 1.6; }
+    .btn-del-confirm { flex: 2; background: var(--red); color: #fff; border: none; padding: 0.7rem; border-radius: 8px; font-family: 'Outfit', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+
+    /* Skeleton */
+    .skel-item { height: 68px; border-radius: 10px; margin-bottom: 8px; background: linear-gradient(90deg, rgba(14,48,80,0.6) 25%, rgba(22,60,90,0.6) 50%, rgba(14,48,80,0.6) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+    /* Empty */
+    .empty { padding: 3rem 1rem; text-align: center; color: var(--muted); font-size: 0.85rem; }
+
+    /* Toast */
+    .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(20px); z-index: 1000; background: var(--mid); border: 1px solid var(--border); border-radius: 10px; padding: 0.8rem 1.2rem; font-size: 0.82rem; white-space: nowrap; opacity: 0; transition: all 0.3s; pointer-events: none; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.success { border-color: rgba(61,184,122,0.4); color: var(--green); }
+    .toast.error   { border-color: rgba(224,92,92,0.4); color: var(--red); }
+  </style>
 </head>
 <body>
-  <aside class="side">
-    <div class="brand">⚓ Náutica Store - Painel</div>
-    <nav><button id="nav-produtos">Produtos</button><button id="nav-stats">Estatísticas</button><button id="btn-logout">Sair</button></nav>
-  </aside>
-  <main class="content">
-    <header><h2 id="page-title">Produtos</h2></header>
-    <section id="page-produtos" class="page">
-      <div class="row">
-        <div class="card">
-          <h3>Adicionar / Editar</h3>
-          <form id="product-form">
-            <input type="hidden" id="prod-id">
-            <label>Nome<input id="prod-nome" required></label>
-            <label>Categoria<select id="prod-categoria"><option value="novo">novo</option><option value="seminovo">seminovo</option></select></label>
-            <label>Estoque<input id="prod-estoque" type="number" required></label>
-            <label>Descrição<textarea id="prod-descricao"></textarea></label>
-            <label>Imagens (múltiplas)<input id="prod-files" type="file" accept="image/*" multiple></label>
-            <div id="preview-list"></div>
-            <div class="form-actions"><button id="btn-save" class="btn primary">Salvar</button><button id="btn-clear" type="button" class="btn">Limpar</button></div>
-          </form>
-        </div>
-        <div class="card" style="flex:1">
-          <h3>Lista de Produtos</h3>
-          <div id="product-list" class="product-list"></div>
-        </div>
-      </div>
-    </section>
-    <section id="page-stats" class="page" style="display:none">
-      <div class="row">
-        <div class="card">
-          <h3>Resumo</h3>
-          <div>Total de produtos: <span id="stat-total">0</span></div>
-          <div>Novos: <span id="stat-novos">0</span></div>
-          <div>Seminovos: <span id="stat-semi">0</span></div>
-          <div>Produtos com estoque baixo: <span id="stat-low">0</span></div>
-        </div>
-        <div class="card" style="flex:1">
-          <h3>Cliques no WhatsApp (top produtos)</h3>
-          <canvas id="clicksChart" height="140"></canvas>
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-logo">⚓ JM Náutica</div>
+    <div class="topbar-right">
+      <button class="btn-novo-top" id="btn-novo">+ Produto</button>
+      <button class="btn-logout-top" id="btn-logout">Sair</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">Total</div><div class="stat-value" id="st-total">—</div><div class="stat-desc">produtos</div></div>
+      <div class="stat-card"><div class="stat-label">Novos</div><div class="stat-value" id="st-novos">—</div><div class="stat-desc">peças novas</div></div>
+      <div class="stat-card"><div class="stat-label">Seminovos</div><div class="stat-value" id="st-semi">—</div><div class="stat-desc">usados</div></div>
+      <div class="stat-card"><div class="stat-label">Cliques WPP</div><div class="stat-value" id="st-clicks">—</div><div class="stat-desc">contatos</div></div>
+    </div>
+
+    <!-- TABELA -->
+    <div class="table-wrap">
+      <div class="table-header">
+        <div class="table-title">Todos os produtos</div>
+        <div class="table-filters">
+          <input class="filter-input" type="text" id="f-busca" placeholder="Buscar produto..." />
+          <select class="filter-select" id="f-cat">
+            <option value="">Todos</option>
+            <option value="novo">Novo</option>
+            <option value="seminovo">Seminovo</option>
+          </select>
         </div>
       </div>
-    </section>
-  </main>
-  <script src="/painel/painel.js"></script>
+      <div id="prod-list">
+        <div class="prod-list">
+          <div class="skel-item"></div><div class="skel-item"></div><div class="skel-item"></div><div class="skel-item"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL PRODUTO -->
+  <div class="modal-bg" id="modal-produto">
+    <div class="modal">
+      <div class="modal-handle"></div>
+      <div class="modal-head">
+        <h2 id="modal-titulo">Novo Produto</h2>
+        <button class="modal-close" onclick="fecharModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="p-id" />
+        <div class="form-row">
+          <div class="form-field full">
+            <label>Nome do produto *</label>
+            <input type="text" id="p-nome" placeholder="Ex: Trim aliviador F40 Yamaha" />
+          </div>
+          <div class="form-field full">
+            <label>Descrição</label>
+            <textarea id="p-descricao" placeholder="Estado de conservação, compatibilidade..."></textarea>
+          </div>
+          <div class="form-field">
+            <label>Categoria *</label>
+            <select id="p-categoria">
+              <option value="1">Novo</option>
+              <option value="2">Seminovo</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Estoque</label>
+            <input type="number" id="p-estoque" placeholder="1" min="0" inputmode="numeric" />
+          </div>
+          <div class="form-field">
+            <label>Preço (R$)</label>
+            <input type="number" id="p-preco" placeholder="0.00" step="0.01" min="0" inputmode="decimal" />
+          </div>
+          <div class="form-field" style="display:flex;align-items:flex-end;padding-bottom:0.3rem">
+            <div class="form-check">
+              <input type="checkbox" id="p-consultar" />
+              <label for="p-consultar">Consultar preço</label>
+            </div>
+          </div>
+
+          <!-- UPLOAD DE IMAGEM -->
+          <div class="form-field full">
+            <label>Imagem do produto</label>
+            <div class="upload-area" id="upload-area">
+              <input type="file" id="p-arquivo" accept="image/jpeg,image/png,image/webp" />
+              <div class="upload-icon">📷</div>
+              <div class="upload-text">Toque para escolher uma foto<br/><strong>JPG, PNG ou WebP — máx 5MB</strong></div>
+            </div>
+            <div class="upload-progress" id="upload-progress"><div class="upload-bar" id="upload-bar"></div></div>
+            <div class="upload-status" id="upload-status"></div>
+            <div class="img-preview-wrap" id="img-preview-wrap">
+              <img class="img-preview" id="img-preview" src="" alt="Preview" />
+            </div>
+            <!-- Fallback: URL manual -->
+            <div style="margin-top:0.6rem">
+              <input type="text" id="p-imagem" placeholder="Ou cole uma URL de imagem aqui..." style="font-size:0.78rem;padding:0.5rem 0.8rem" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn-cancel" onclick="fecharModal()">Cancelar</button>
+        <button class="btn-save" id="btn-save">Salvar produto</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL CONFIRMAR EXCLUSÃO -->
+  <div class="modal-bg confirm-modal" id="modal-confirm">
+    <div class="modal">
+      <div class="modal-handle"></div>
+      <div class="modal-head">
+        <h2>Remover produto</h2>
+        <button class="modal-close" onclick="fecharConfirm()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p>Tem certeza que deseja remover <strong id="confirm-nome"></strong>?</p>
+      </div>
+      <div class="modal-foot">
+        <button class="btn-cancel" onclick="fecharConfirm()">Cancelar</button>
+        <button class="btn-del-confirm" id="btn-del-confirm">Remover</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const API   = '/api';
+    const TOKEN = () => localStorage.getItem('nautica_token');
+    const AUTH  = () => ({ 'Authorization': `Bearer ${TOKEN()}` });
+
+    if (!TOKEN()) window.location.href = '/painel/login.html';
+
+    let produtos = [], catAtiva = '', buscaAtiva = '', debounce;
+    let editandoId = null, deletandoId = null;
+    let imagemUploadUrl = '';
+
+    // ── Logout ─────────────────────────────────────────
+    document.getElementById('btn-logout').addEventListener('click', () => {
+      localStorage.clear(); window.location.href = '/painel/login.html';
+    });
+
+    // ── Carregar produtos ───────────────────────────────
+    async function carregar() {
+      const qs = new URLSearchParams({ limite: 100 });
+      if (catAtiva)   qs.set('categoria', catAtiva);
+      if (buscaAtiva) qs.set('busca', buscaAtiva);
+      try {
+        const r = await fetch(`${API}/produtos?${qs}`, { headers: AUTH() });
+        const d = await r.json();
+        produtos = d.dados || [];
+        renderLista();
+        renderStats();
+      } catch { toast('Erro ao carregar.', 'error'); }
+    }
+
+    function renderStats() {
+      document.getElementById('st-total').textContent  = produtos.length;
+      document.getElementById('st-novos').textContent  = produtos.filter(p => p.categoria_slug === 'novo').length;
+      document.getElementById('st-semi').textContent   = produtos.filter(p => p.categoria_slug === 'seminovo').length;
+      document.getElementById('st-clicks').textContent = produtos.reduce((s,p) => s + (p.whatsapp_clicks||0), 0);
+    }
+
+    function renderLista() {
+      const el = document.getElementById('prod-list');
+      if (!produtos.length) { el.innerHTML = '<div class="empty">Nenhum produto encontrado.</div>'; return; }
+      el.innerHTML = `<div class="prod-list">${produtos.map(renderItem).join('')}</div>`;
+    }
+
+    function renderItem(p) {
+      const cat   = p.categoria_slug === 'novo' ? 'badge-novo' : 'badge-seminovo';
+      const catNm = p.categoria_nome || p.categoria_slug || 'Peça';
+      const preco = (p.consultar_preco || !p.preco)
+        ? '<span style="font-size:0.72rem;color:var(--muted)">Consultar</span>'
+        : `<span class="prod-preco">R$ ${Number(p.preco).toLocaleString('pt-BR',{minimumFractionDigits:2})}</span>`;
+      const img = p.imagem_principal
+        ? `<div class="prod-img"><img src="${p.imagem_principal}" alt="${p.nome}" onerror="this.outerHTML='<div class=prod-img style=font-size:1.4rem>⚙️</div>'" /></div>`
+        : `<div class="prod-img">⚙️</div>`;
+      return `
+        <div class="prod-item">
+          ${img}
+          <div class="prod-info">
+            <div class="prod-nome">${p.nome}</div>
+            <div class="prod-meta">
+              <span class="badge ${cat}">${catNm}</span>
+              ${preco}
+              <span class="prod-clicks">💬 ${p.whatsapp_clicks||0}</span>
+            </div>
+          </div>
+          <div class="prod-actions">
+            <button class="btn-edit" onclick="abrirEditar(${p.id})">Editar</button>
+            <button class="btn-del"  onclick="abrirDeletar(${p.id},'${p.nome.replace(/'/g,"\\'")}')">Remover</button>
+          </div>
+        </div>`;
+    }
+
+    // ── Filtros ─────────────────────────────────────────
+    document.getElementById('f-busca').addEventListener('input', e => {
+      clearTimeout(debounce);
+      debounce = setTimeout(() => { buscaAtiva = e.target.value.trim(); carregar(); }, 350);
+    });
+    document.getElementById('f-cat').addEventListener('change', e => { catAtiva = e.target.value; carregar(); });
+
+    // ── Upload de imagem ────────────────────────────────
+    document.getElementById('p-arquivo').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      // Preview local imediato
+      const reader = new FileReader();
+      reader.onload = ev => {
+        document.getElementById('img-preview').src = ev.target.result;
+        document.getElementById('img-preview-wrap').classList.add('show');
+      };
+      reader.readAsDataURL(file);
+
+      // Faz upload para o Cloudinary via API
+      document.getElementById('upload-progress').classList.add('show');
+      document.getElementById('upload-status').textContent = 'Enviando imagem...';
+      document.getElementById('upload-bar').style.width = '30%';
+
+      const form = new FormData();
+      form.append('imagem', file);
+
+      try {
+        const res  = await fetch(`${API}/upload/imagem`, { method: 'POST', headers: AUTH(), body: form });
+        document.getElementById('upload-bar').style.width = '100%';
+
+        if (!res.ok) {
+          const d = await res.json();
+          document.getElementById('upload-status').textContent = '❌ ' + (d.erro || 'Erro no upload');
+          return;
+        }
+
+        const data = await res.json();
+        imagemUploadUrl = data.url;
+        document.getElementById('p-imagem').value = data.url;
+        document.getElementById('upload-status').textContent = '✅ Imagem enviada!';
+        document.getElementById('img-preview').src = data.url;
+      } catch {
+        document.getElementById('upload-status').textContent = '❌ Erro de conexão no upload.';
+      }
+    });
+
+    // ── Modal produto ───────────────────────────────────
+    document.getElementById('btn-novo').addEventListener('click', () => {
+      editandoId = null; imagemUploadUrl = '';
+      limparForm();
+      document.getElementById('modal-titulo').textContent = 'Novo Produto';
+      document.getElementById('modal-produto').classList.add('open');
+    });
+
+    function fecharModal() {
+      document.getElementById('modal-produto').classList.remove('open');
+      limparForm(); editandoId = null; imagemUploadUrl = '';
+    }
+
+    function limparForm() {
+      ['p-id','p-nome','p-descricao','p-preco','p-imagem'].forEach(id => { document.getElementById(id).value = ''; });
+      document.getElementById('p-categoria').value  = '1';
+      document.getElementById('p-estoque').value    = '1';
+      document.getElementById('p-consultar').checked = true;
+      document.getElementById('p-arquivo').value   = '';
+      document.getElementById('img-preview-wrap').classList.remove('show');
+      document.getElementById('upload-progress').classList.remove('show');
+      document.getElementById('upload-status').textContent = '';
+      document.getElementById('upload-bar').style.width = '0%';
+    }
+
+    function abrirEditar(id) {
+      const p = produtos.find(x => x.id === id);
+      if (!p) return;
+      editandoId = id; imagemUploadUrl = p.imagem_principal || '';
+      document.getElementById('p-id').value          = p.id;
+      document.getElementById('p-nome').value        = p.nome;
+      document.getElementById('p-descricao').value   = p.descricao || '';
+      document.getElementById('p-preco').value       = p.preco || '';
+      document.getElementById('p-imagem').value      = p.imagem_principal || '';
+      document.getElementById('p-estoque').value     = p.estoque ?? 1;
+      document.getElementById('p-consultar').checked = p.consultar_preco;
+      document.getElementById('p-categoria').value   = p.categoria_slug === 'novo' ? '1' : '2';
+      if (p.imagem_principal) {
+        document.getElementById('img-preview').src = p.imagem_principal;
+        document.getElementById('img-preview-wrap').classList.add('show');
+      }
+      document.getElementById('modal-titulo').textContent = 'Editar Produto';
+      document.getElementById('modal-produto').classList.add('open');
+    }
+
+    document.getElementById('btn-save').addEventListener('click', async () => {
+      const nome = document.getElementById('p-nome').value.trim();
+      if (!nome) { toast('Nome é obrigatório.', 'error'); return; }
+
+      const imgUrl = document.getElementById('p-imagem').value.trim() || imagemUploadUrl;
+
+      const payload = {
+        nome,
+        descricao:        document.getElementById('p-descricao').value,
+        preco:            parseFloat(document.getElementById('p-preco').value) || 0,
+        consultar_preco:  document.getElementById('p-consultar').checked,
+        estoque:          parseInt(document.getElementById('p-estoque').value) || 1,
+        categoria_id:     parseInt(document.getElementById('p-categoria').value),
+        imagem_principal: imgUrl,
+      };
+
+      const btn = document.getElementById('btn-save');
+      btn.disabled = true; btn.textContent = 'Salvando...';
+
+      try {
+        const url    = editandoId ? `${API}/produtos/${editandoId}` : `${API}/produtos`;
+        const method = editandoId ? 'PUT' : 'POST';
+        const res    = await fetch(url, { method, headers: { ...AUTH(), 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const d      = await res.json();
+        if (!res.ok) { toast(d.erro || 'Erro ao salvar.', 'error'); return; }
+        toast(editandoId ? 'Produto atualizado!' : 'Produto criado!', 'success');
+        fecharModal(); carregar();
+      } catch { toast('Erro de conexão.', 'error'); }
+      finally { btn.disabled = false; btn.textContent = 'Salvar produto'; }
+    });
+
+    // ── Modal deletar ───────────────────────────────────
+    function abrirDeletar(id, nome) {
+      deletandoId = id;
+      document.getElementById('confirm-nome').textContent = nome;
+      document.getElementById('modal-confirm').classList.add('open');
+    }
+    function fecharConfirm() { document.getElementById('modal-confirm').classList.remove('open'); deletandoId = null; }
+
+    document.getElementById('btn-del-confirm').addEventListener('click', async () => {
+      if (!deletandoId) return;
+      try {
+        const res = await fetch(`${API}/produtos/${deletandoId}`, { method: 'DELETE', headers: AUTH() });
+        if (!res.ok) { toast('Erro ao remover.', 'error'); return; }
+        toast('Produto removido.', 'success'); fecharConfirm(); carregar();
+      } catch { toast('Erro de conexão.', 'error'); }
+    });
+
+    // Fecha modais clicando fora
+    document.getElementById('modal-produto').addEventListener('click', e => { if (e.target.id === 'modal-produto') fecharModal(); });
+    document.getElementById('modal-confirm').addEventListener('click', e => { if (e.target.id === 'modal-confirm') fecharConfirm(); });
+
+    // ── Toast ───────────────────────────────────────────
+    function toast(msg, tipo = 'success') {
+      const el = document.getElementById('toast');
+      el.textContent = (tipo === 'success' ? '✅ ' : '❌ ') + msg;
+      el.className = `toast ${tipo} show`;
+      setTimeout(() => el.classList.remove('show'), 3000);
+    }
+
+    carregar();
+  </script>
 </body>
 </html>
