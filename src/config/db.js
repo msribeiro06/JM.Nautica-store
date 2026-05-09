@@ -1,24 +1,36 @@
 // src/config/db.js
-// Conexão com PostgreSQL via pool — reutiliza conexões abertas
-// para não abrir uma nova a cada requisição.
+// Suporta DATABASE_URL (Railway/produção) ou variáveis separadas (desenvolvimento local)
 
 const { Pool } = require('pg');
 
-const pool = new Pool({
-  host:     process.env.DB_HOST     || 'localhost',
-  port:     parseInt(process.env.DB_PORT || '5432'),
-  database: process.env.DB_NAME     || 'nautica_store',
-  user:     process.env.DB_USER     || 'postgres',
-  password: process.env.DB_PASSWORD || '',
-  max:      10,           // máximo de conexões simultâneas no pool
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
-  ssl: process.env.DB_SSL === 'true'
-    ? { rejectUnauthorized: false }
-    : false,
-});
+let poolConfig;
 
-// Testa a conexão ao iniciar
+if (process.env.DATABASE_URL) {
+  // Produção — Railway fornece a DATABASE_URL completa
+  poolConfig = {
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false },
+    max: 10,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 5000,
+  };
+} else {
+  // Desenvolvimento local — variáveis separadas do .env
+  poolConfig = {
+    host:     process.env.DB_HOST     || 'localhost',
+    port:     parseInt(process.env.DB_PORT || '5432'),
+    database: process.env.DB_NAME     || 'nautica_store',
+    user:     process.env.DB_USER     || 'postgres',
+    password: process.env.DB_PASSWORD || '',
+    ssl:      process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
+    max: 10,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 5000,
+  };
+}
+
+const pool = new Pool(poolConfig);
+
 pool.connect((err, client, release) => {
   if (err) {
     console.error('[DB] Erro ao conectar ao PostgreSQL:', err.message);
@@ -28,8 +40,6 @@ pool.connect((err, client, release) => {
   console.log('[DB] PostgreSQL conectado com sucesso!');
 });
 
-// Helper: executa uma query e retorna as linhas
-// Uso: const rows = await query('SELECT * FROM produtos WHERE id = $1', [id])
 async function query(text, params) {
   const start = Date.now();
   try {
@@ -43,8 +53,6 @@ async function query(text, params) {
   }
 }
 
-// Helper: executa múltiplas queries em uma transação
-// Uso: await transaction(async (client) => { await client.query(...) })
 async function transaction(callback) {
   const client = await pool.connect();
   try {
